@@ -9,7 +9,9 @@ import com.ruipereira.tfinal_ruipereira.classesAuxiliares.Contacto
 
 /**
  * Classe Controladora Driver que gere o acesso à Base de dados:"contactos.db" - SQLite
+ *
  * @author  Rui Pereira
+ *
  * @see SQLiteOpenHelper
  */
 class DBHelper : SQLiteOpenHelper {

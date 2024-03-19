@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ruipereira.tfinal_ruipereira.databinding.DefinicoesBinding
 
 /**
- * @author  Rui Pereira
  * Classe que serve para alterar o pino do utilizador
+ *
+ * @author  Rui Pereira
+ *
  */
 class Definicoes : AppCompatActivity() {
     private var resultado: Int = 0

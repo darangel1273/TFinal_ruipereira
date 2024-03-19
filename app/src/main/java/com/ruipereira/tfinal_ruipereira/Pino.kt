@@ -12,6 +12,7 @@ import com.ruipereira.tfinal_ruipereira.databinding.PinoBinding
 
 /**
  * Classe que pede autenticação do utlizador com a introdução de um pino
+ *
  * @author  Rui Pereira
  */
 class Pino : AppCompatActivity() {

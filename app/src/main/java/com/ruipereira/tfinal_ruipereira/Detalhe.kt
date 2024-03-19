@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ruipereira.tfinal_ruipereira.bd.DBHelper
 import com.ruipereira.tfinal_ruipereira.classesAuxiliares.Contacto
 import com.ruipereira.tfinal_ruipereira.databinding.DetalheBinding
-import java.util.Locale
 
 /**
  * Classe que vai fazer a gestão dos detalhes do Contacto
@@ -196,12 +195,10 @@ class Detalhe : AppCompatActivity() {
      */
     private fun calculaIdade(): String {
         c[0].setNasc(binding.txtNasc.text.toString())
-        return String.format(
-            Locale.forLanguageTag("PT"),
-            "%d %s",
-            c[0].getAnos(),
-            R.string.anos
-        )  // .toString().plus(R.string.anos)
+        return c[0].getAnos().toString()  // .toString().plus(R.string.anos)
+//        return String.format(" %s ", c[0].getAnos().toString().plus(R.string.anos ) )  // .toString().plus(R.string.anos)
+//        return String.format(Locale.forLanguageTag("PT_PT"),"%d %s", c[0].getAnos(), R.string.anos
+//        return String.format("%d %s", c[0].getAnos(), R.string.anos )  // .toString().plus(R.string.anos)
     }
 
     /**

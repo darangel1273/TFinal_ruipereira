@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/myfriendz"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Pino">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textStyle="bold|italic" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/txt_pino"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/introduza_o_pino"
+            android:inputType="numberPassword"
+            android:text="@string/pino"
+            android:textAlignment="textEnd"
+            android:textSize="35sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login" />
+
+        <Button
+            android:id="@+id/btn_def"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alterarPino" />
+    </LinearLayout>
+</LinearLayout>

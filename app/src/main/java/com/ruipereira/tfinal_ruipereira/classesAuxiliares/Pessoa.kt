@@ -35,7 +35,7 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
     fun setCC(bi: String) {
         try {
             validarCC(bi)
-        }                              //Chamada à função da interface
+        }  //Chamada à função da interface
         catch (de: DocumentoException) {
             de.printStackTrace()
         } finally {
@@ -74,7 +74,7 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         this.Idade = Period.between(this.Nascimento, LocalDate.now(ZoneId.systemDefault()))
     }
 
-    @Deprecated("Não Implementado")
+    @Deprecated("(Não Implementado)")
     fun setFoto() {
         val iFoto = Intent(Intent.ACTION_OPEN_DOCUMENT)
         iFoto.addCategory(Intent.CATEGORY_OPENABLE)

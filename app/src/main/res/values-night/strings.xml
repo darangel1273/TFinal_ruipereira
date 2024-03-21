@@ -56,4 +56,6 @@
     <string name="cc">Cartão de Cidadão</string>
     <string name="duplicado">duplicado</string>
     <string name="CCInvalido">Cartão de Cidadão Inválido</string>
+    <string name="camara">Máquina fotográfica</string>
+    <string name="galeria">Galeria de Fotos</string>
 </resources>

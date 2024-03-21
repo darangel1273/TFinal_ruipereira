@@ -4,8 +4,10 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.ruipereira.tfinal_ruipereira.bd.DBHelper
 import com.ruipereira.tfinal_ruipereira.classesAuxiliares.Contacto
@@ -16,7 +18,7 @@ import com.ruipereira.tfinal_ruipereira.databinding.DetalheBinding
  * @author  Rui Pereira
  */
 class Detalhe : AppCompatActivity() {
-    private lateinit var StringS: ArrayList<String>
+    private lateinit var stringS: ArrayList<String>
     private lateinit var iLigar: Intent
     private val binding by lazy { DetalheBinding.inflate(layoutInflater) }
     private var resultado = 0
@@ -25,7 +27,8 @@ class Detalhe : AppCompatActivity() {
     private lateinit var c: ArrayList<Contacto>
     private var indice: Int = 0
     private lateinit var ligarDB: DBHelper
-
+    private lateinit var res: ActivityResultLauncher<Intent>
+    private lateinit var imgUrl: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -38,7 +41,7 @@ class Detalhe : AppCompatActivity() {
         binding.btnRemover.visibility =
             View.VISIBLE                    // mostra sempre o botão para apagar, excepto quando for adicionar
         val beep = MediaPlayer.create(applicationContext, R.raw.click)
-        StringS =
+        stringS =
             ArrayList()                                           // Inicializa o array de Strings que vai receber os extras
         c =
             ArrayList()                                                 // Abrir o Array que vai ter os dados à "chegada" e à "saída"
@@ -52,48 +55,67 @@ class Detalhe : AppCompatActivity() {
             binding.lblOperacao.text =
                 pack.getString("Operacao", R.string.operacaoinvalida.toString())
         } else {
-            load2form()                                                 // form limpo para um novo registo
-        }                                                                // Ver os Detalhes do Contacto
-        binding.btnVoltar.setOnClickListener {                   // Apenas para ver, só volta sem nada para fazer
+            load2form()                                               // form limpo para um novo registo
+        }                                                             // Ver os Detalhes do Contacto
+        binding.btnVoltar.setOnClickListener {                 // Apenas para ver, só volta sem nada para fazer
             sair(beep)
+        }
+        binding.imgCamara.setOnClickListener {                  // Abrir a camara
+            val iCam = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            res.launch(iCam)
+        }
+        binding.imgGaleria.setOnClickListener {
+            val iGal = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            res.launch(iGal)
         }
         binding.txtCc.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 if (ligarDB.jaExiste(binding.txtCc.text.toString())) { // Vai à BD ver se o cc já existe
                     Toast.makeText(this, R.string.duplicado, Toast.LENGTH_LONG).show()
-                    binding.txtCc.requestFocus()                        // se existir, obriga a introduzir outro
+                    binding.txtCc.requestFocus()                      // se existir, obriga a introduzir outro
                 }
             }
         }
         binding.txtNasc.setOnFocusChangeListener { v, hasFocus ->
-            try {                                                        //depois de mexer na data de nascimento
+            try {                                                     //depois de mexer na data de nascimento
                 if (!hasFocus) binding.txtIdade.text = calculaIdade()
-            }                                                           //quando sair, calcula a idade
+            }                                                         //quando sair, calcula a idade
             catch (e: Exception) {
                 binding.txtNasc.requestFocus()
             }     //Se houver erro na data de nascimento
-        }                                                                   //Volta a introduzi-la
+        }                                                             //Volta a introduzi-la
         binding.btnLigarTlf.setOnClickListener {
             chamar(binding.txtTelefone.text.toString(), beep)         // Chamar para telefone fixo
         }
         binding.btnLigarTlm.setOnClickListener {
-            chamar(binding.txtTelemovel.text.toString(), beep)         // Chamar para telemovel
+            chamar(binding.txtTelemovel.text.toString(), beep)        // Chamar para telemovel
         }
         binding.btnRemover.setOnClickListener {
             resultado =
-                2                                               // informação para apagar o registo
+                2                                              // informação para apagar o registo
             pack.putString(
                 "Operacao",
                 "Remover"
-            )                        // informação para apagar o registo
+            )                      // informação para apagar o registo
             sair(beep)
         }
         binding.btnGravar.setOnClickListener {// Este botão pode adicionar um registo novo ou gravar dados editados
             save2extras()
             sair(beep)
         }
+        // retorno dos Intents
+        //res = registerForActivityResult(ActivityResultContracts.StartActivityForResult() ) {
+        //}
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(pedido: Int, resultado: Int, ifoto: Intent?) {
+        super.onActivityResult(pedido, resultado, ifoto)
+        if (resultado == RESULT_OK) {
+            imgUrl = ifoto?.data!!
+            binding.imgFoto.setImageURI(imgUrl)
+        }
+    }
     /**
      * Função que embala o registo do Contacto; a posicao no array; e a operação a fazer; dentro do Bundle
      * para posteriormente ser anexado ao Intent.
@@ -111,8 +133,8 @@ class Detalhe : AppCompatActivity() {
         }       //Validar a sigla do Sexo
         c.add(
             Contacto(
-                binding.txtCc.text.toString(),
-                binding.txtNome.text.toString(),                    // Criar outro contacto com os dados "actualizados"
+                binding.txtCc.text.toString(), // Criar outro contacto com os dados "actualizados"
+                binding.txtNome.text.toString(),
                 binding.txtMorada.text.toString(), binding.txtNasc.text.toString(),
                 sx, binding.txtTelefone.text.toString(), binding.txtTelemovel.text.toString(),
                 binding.txtEmail.text.toString()
@@ -157,9 +179,9 @@ class Detalhe : AppCompatActivity() {
      * @see Bundle
      */
     private fun load2form() {
-        StringS =
+        stringS =
             pack.getStringArrayList("Contacto")!!      // Extrair os extras do Contacto no bundle
-        c.add(Contacto(StringS))                               // Carrega o 1ºIndice com os extras
+        c.add(Contacto(stringS))                               // Carrega o 1ºIndice com os extras
         binding.lblPosRegisto.text = pack.getInt("Posicao", -1).toString()
         binding.lblOperacao.text =
             pack.getString("Operacao", "") //Controlo a fazer no Detalhe que veio da Lista

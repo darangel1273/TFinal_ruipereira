@@ -14,13 +14,14 @@ import java.time.ZoneId
  * @author  Rui Pereira
  */
 open class Pessoa : DocumentoValido {    //obriga a declarar a interface
-    private var CC: String = "00"
-    private var Nome: String = ""
-    private var Morada: String = ""
-    private var Nascimento: LocalDate = LocalDate.parse("1900-01-01")
-    private var Sexo: String = "A"
-    private var Idade: Period = Period.between(Nascimento, LocalDate.now())
-    private lateinit var Foto: ImageView
+    private var cartCid: String = "00"
+    private var nome: String = ""
+    private var morada: String = ""
+    private var nascimento: LocalDate = LocalDate.parse("1900-01-01")
+    private var sexo: String = "A"
+    private var idade: Period = Period.between(nascimento, LocalDate.now())
+    private var strFoto: String = ""
+    private lateinit var foto: ImageView
 
     /**
      * Construtores
@@ -31,6 +32,7 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
 
     /**
      * Setters
+     * Setter para o Cartão de Cidadão
      */
     fun setCC(bi: String) {
         try {
@@ -39,22 +41,22 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         catch (de: DocumentoException) {
             de.printStackTrace()
         } finally {
-            this.CC = bi
+            this.cartCid = bi
         } //Mesmo que seja inválido, aceita o CC na mesma. (Devido a erros na validação do CC)
     }
 
     fun setNome(nome: String) {
-        this.Nome = nome
+        this.nome = nome
     }
 
     fun setMorada(morada: String) {
-        this.Morada = morada
+        this.morada = morada
     }
 
     fun setSexo(sexo: String) {
         try {
             if (sexo != "M" && sexo != "F") throw java.lang.Exception() //Erro-Excepção Personalizada
-            this.Sexo = sexo
+            this.sexo = sexo
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -62,18 +64,21 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
 
     fun setNasc(nascimento: String) {
         try {
-            this.Nascimento = LocalDate.parse(nascimento); setIdade()
+            this.nascimento = LocalDate.parse(nascimento); setIdade()
         } catch (e: Exception) {
-            e.printStackTrace();this.Nascimento = LocalDate.now(ZoneId.systemDefault())
+            e.printStackTrace();this.nascimento = LocalDate.now(ZoneId.systemDefault())
         }//Se estiver errado atribui a data actual na mesma
         finally {
         }
     }
 
-    fun setIdade() {
-        this.Idade = Period.between(this.Nascimento, LocalDate.now(ZoneId.systemDefault()))
+    private fun setIdade() {
+        this.idade = Period.between(this.nascimento, LocalDate.now(ZoneId.systemDefault()))
     }
 
+    fun setStrFoto(fotoStr: String) {
+        this.strFoto = fotoStr
+    }
     @Deprecated("(Não Implementado)")
     fun setFoto() {
         val iFoto = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -85,27 +90,35 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      * Getters
      */
     fun getCC(): String {
-        return this.CC
+        return this.cartCid
     }
 
     fun getNome(): String {
-        return this.Nome
+        return this.nome
     }
 
     fun getMorada(): String {
-        return this.Morada
+        return this.morada
     }
 
     fun getSexo(): String {
-        return this.Sexo
+        return this.sexo
     }
 
     fun getNasc(): LocalDate {
-        return this.Nascimento
+        return this.nascimento
     }
 
     fun getAnos(): Int {
-        return (this.Idade.years)
+        return this.idade.years
+    }
+
+    fun getIdade(): Period {
+        return this.idade
+    }
+
+    fun getFotoStr(): String {
+        return this.strFoto
     }
 
     /**
@@ -229,19 +242,19 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      * Se for outro qualquer algarismo X, o dígito de controlo será o resultado da subtracção 11 - X.
      * @see     <link>https://github.com/marcolopes/dma/blob/master/org.dma.services.vies/src/org/dma/services/vies/VatNumber.java</link>
      * @author  org.dma.services.vies
-     * @param   number  String
+     * @param   nif  String
      * @return  Boolean
      */
-    override fun validarNIF(number: String): Boolean {
+    override fun validarNIF(nif: String): Boolean {
         val max = 9
         //check if is numeric and has 9 numbers
         //check if is numeric and has 9 numbers
-        if (!number.contains("0-9]+") || number.length != max) return false
+        if (!nif.contains("0-9]+") || nif.length != max) return false
         var checkSum = 0
         //calculate checkSum
         //calculate checkSum
         for (i in 0 until max - 1) {
-            checkSum += (number[i] - '0') * (max - i)
+            checkSum += (nif[i] - '0') * (max - i)
         }
         var checkDigit = 11 - checkSum % 11
         //if checkDigit is higher than 9 set it to zero
@@ -249,6 +262,6 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         if (checkDigit > 9) checkDigit = 0
         //compare checkDigit with the last number of NIF
         //compare checkDigit with the last number of NIF
-        return checkDigit == number[max - 1] - '0'
+        return checkDigit == nif[max - 1] - '0'
     }
 }

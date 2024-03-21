@@ -55,4 +55,6 @@
     <string name="cc">Carton du Cityaen</string>
     <string name="duplicado">dupliqué</string>
     <string name="CCInvalido">Carton du Cityen invalidé</string>
+    <string name="camara">Máquina fotográfica</string>
+    <string name="galeria">Galeria de Fotos</string>
 </resources>

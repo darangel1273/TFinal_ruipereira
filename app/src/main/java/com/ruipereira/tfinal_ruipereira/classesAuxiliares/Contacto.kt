@@ -13,7 +13,7 @@ class Contacto : Pessoa {
     private var Email: String = ""
 
     /**
-     * Construtor 1
+     * Construtor 1 - Array de String
      * @param   ArrayList
      */
     constructor(a: ArrayList<String>) : super(a[0], a[1], a[2], a[3], a[4]) {
@@ -21,7 +21,7 @@ class Contacto : Pessoa {
     }
 
     /**
-     * Construtor 2 Só de Strings
+     * Construtor 2 - Só de Strings
      */
     constructor(
         bi: String,
@@ -74,10 +74,8 @@ class Contacto : Pessoa {
     }//super.toString()+":"+getTelefone()+":"+getTelemovel()+":"+getEmail() }
 
     override fun toArrayList(): ArrayList<String> {
-        var ret: ArrayList<String> = ArrayList()
+        val ret: ArrayList<String> = ArrayList()
         ret.addAll(super.toArrayList())
-        //ret.add( getCC() );ret.add( getNome() );ret.add( getMorada() );ret.add( getNasc().toString() )
-        //ret.add( getSexo() );
         ret.add(getTelefone());ret.add(getTelemovel());ret.add(getEmail())
         return ret
     }

@@ -55,4 +55,6 @@
     <string name="cc">Identification Card</string>
     <string name="duplicado">duplicate key</string>
     <string name="CCInvalido">Invalid identification Number</string>
+    <string name="camara">Máquina fotográfica</string>
+    <string name="galeria">Galeria de Fotos</string>
 </resources>

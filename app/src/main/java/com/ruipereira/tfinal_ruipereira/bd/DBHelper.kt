@@ -14,6 +14,7 @@ import com.ruipereira.tfinal_ruipereira.classesAuxiliares.Contacto
  *
  * @see SQLiteOpenHelper
  */
+const val uriEstatica = "android.resource://tfinal_ruipereira/drawable/semfoto"
 class DBHelper : SQLiteOpenHelper {
     private var name: String = "contactos.db"
     private var versao: Int = 0// private var db : SQLiteDatabase? =null ;

@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.ruipereira.tfinal_ruipereira.bd.DBHelper
 import com.ruipereira.tfinal_ruipereira.classesAuxiliares.Contacto
@@ -104,16 +105,11 @@ class Detalhe : AppCompatActivity() {
             sair(beep)
         }
         // retorno dos Intents
-        //res = registerForActivityResult(ActivityResultContracts.StartActivityForResult() ) {
-        //}
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(pedido: Int, resultado: Int, ifoto: Intent?) {
-        super.onActivityResult(pedido, resultado, ifoto)
-        if (resultado == RESULT_OK) {
-            imgUrl = ifoto?.data!!
-            binding.imgFoto.setImageURI(imgUrl)
+        res = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (resultado == RESULT_OK) {
+                imgUrl = Uri.parse(it.data.toString())
+                binding.imgFoto.setImageURI(imgUrl)
+            }
         }
     }
     /**

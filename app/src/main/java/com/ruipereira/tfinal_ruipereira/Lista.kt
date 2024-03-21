@@ -90,29 +90,29 @@ class Lista : AppCompatActivity() {
         res = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if ((it.data?.extras?.getString("Operacao", "") != null)) {
                 operacao = it.data?.extras?.getString("Operacao", "")!!
-                if (it.resultCode != RESULT_OK) //Veio da Activity Sobre? - resultCode = -1
-                    if (operacao != "Adicionar") {              // recupera a posição que foi enviada daqui
+                if (it.resultCode != RESULT_OK)         //Veio da Activity Sobre? - resultCode = -1
+                    if (operacao != "Adicionar") {      // recupera a posição que foi enviada daqui
                         pos = it.data?.extras?.getInt("Posicao", -1)!!
-                    }//A adicionar, não há transporte da pos do ArrayList
-                if (it.resultCode == 0)                          //Só Voltou, não houve alterações
+                    }                           //A adicionar, não há transporte da pos do ArrayList
+                if (it.resultCode == 0)                 //Só Voltou, não houve alterações
                     Toast.makeText(applicationContext, R.string.registoigual, Toast.LENGTH_SHORT)
                         .show()
-                if (it.resultCode == 2)                         //indicação de Apagar o registo
-                    if (operacao == "Remover") {             //Apagar o Contacto que veio do detalhe
-                        ligarBD.apaga(contS[pos])            // Apaga da Base de Dados
-                        contS.removeAt(pos)                 // Apaga do ArrayList
+                if (it.resultCode == 2)                 //indicação de Apagar o registo
+                    if (operacao == "Remover") {        //Apagar o Contacto que veio do detalhe
+                        ligarBD.apaga(contS[pos])       // Apaga da Base de Dados
+                        contS.removeAt(pos)             // Apaga do ArrayList
                     }
-                if (it.resultCode == 1)                    //Houve alterações entre o registo que foi e o que voltou
+                if (it.resultCode == 1)                 //Houve alterações entre o registo que foi e o que voltou
                     if (operacao == "Editar") {
                         ligarBD.atualiza(Contacto(it.data?.extras?.getStringArrayList("Contacto")!!))          // Faz update na tabela contacto
                         contS[pos] = Contacto(it.data?.extras?.getStringArrayList("Contacto")!!)
                     }
-                if (it.resultCode == 3)                    //Houve alterações entre o registo que foi e o que voltou
-                    if (operacao == "Adicionar") {          //Adicionar um novo Contacto
+                if (it.resultCode == 3)                 //Houve alterações entre o registo que foi e o que voltou
+                    if (operacao == "Adicionar") {      //Adicionar um novo Contacto
                         ligarBD.insere(Contacto(it.data?.extras?.getStringArrayList("Contacto")!!))
                         contS.add(Contacto(it.data?.extras?.getStringArrayList("Contacto")!!))
                     }
-                adaptar()                                  //Refrescar as alterações
+                adaptar()                               //Refrescar as alterações
             }
         }
     }

@@ -73,6 +73,11 @@ class Contacto : Pessoa {
         return getNome()
     }//super.toString()+":"+getTelefone()+":"+getTelemovel()+":"+getEmail() }
 
+    /**
+     * Método que converte o corrente objecto #Contacto num Array de Strings
+     * (sobrepõe-se ao método da SuperClasse)
+     * @return  ret
+     */
     override fun toArrayList(): ArrayList<String> {
         val ret: ArrayList<String> = ArrayList()
         ret.addAll(super.toArrayList())
@@ -83,7 +88,7 @@ class Contacto : Pessoa {
     /**
      * Cria uma embalagem de Content Values do Contacto para simplificar as instruções de SQL no DBHelper
      * @see DBHelper
-     * @return  ContentValues
+     * @return  cv  ContentValues
      */
     override fun toCV(): ContentValues {
         val cv = super.toCV()

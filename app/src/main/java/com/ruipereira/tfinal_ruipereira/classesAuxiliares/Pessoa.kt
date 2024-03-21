@@ -1,7 +1,8 @@
 package com.ruipereira.tfinal_ruipereira.classesAuxiliares
 
 import android.content.ContentValues
-import android.content.Intent
+import android.content.Context
+import android.net.Uri
 import android.widget.ImageView
 import java.time.LocalDate
 import java.time.Period
@@ -13,21 +14,49 @@ import java.time.ZoneId
  * @see <link>https://kotlinlang.org/docs/inheritance.html</link>
  * @author  Rui Pereira
  */
+const val uriEstatica = "android.resource://tfinal_ruipereira/drawable/semfoto"
 open class Pessoa : DocumentoValido {    //obriga a declarar a interface
     private var cartCid: String = "00"
     private var nome: String = ""
     private var morada: String = ""
-    private var nascimento: LocalDate = LocalDate.parse("1900-01-01")
+    private var nascimento: LocalDate = LocalDate.parse("1911-01-01")
     private var sexo: String = "A"
     private var idade: Period = Period.between(nascimento, LocalDate.now())
-    private var strFoto: String = ""
+    private var uriFoto: Uri = Uri.parse(uriEstatica)
     private lateinit var foto: ImageView
 
     /**
-     * Construtores
+     * Construtor de 5 Strings
+     * @version 1
+     * @param   cc      String.
+     * @param   nome    String.
+     * @param   morada  String.
+     * @param   nascimento  String.
+     * @param   sexo    String.
      */
     constructor(cc: String, nome: String, morada: String, nascimento: String, sexo: String) {
         setCC(cc);setNome(nome);setMorada(morada);setNasc(nascimento);setSexo(sexo)
+    }
+
+    /**
+     * Construtor de 6 Strings, com a Uri da ImageView
+     * @version 2
+     * @param   cc      String.
+     * @param   nome    String.
+     * @param   morada  String.
+     * @param   nascimento  String.
+     * @param   sexo    String.
+     * @param   uri    String.
+     */
+    constructor(
+        cc: String,
+        nome: String,
+        morada: String,
+        nascimento: String,
+        sexo: String,
+        uri: String
+    ) {
+        setCC(cc);setNome(nome);setMorada(morada);setNasc(nascimento);setSexo(sexo);setUri(uri)
     }
 
     /**
@@ -44,46 +73,69 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
             this.cartCid = bi
         } //Mesmo que seja inválido, aceita o CC na mesma. (Devido a erros na validação do CC)
     }
-
     fun setNome(nome: String) {
         this.nome = nome
     }
-
     fun setMorada(morada: String) {
         this.morada = morada
     }
 
+    /**
+     * Método que valida o sexo da Pessoa
+     * @param sexo  String
+     * @throws  erro
+     * @see SexoException
+     */
     fun setSexo(sexo: String) {
         try {
             if (sexo != "M" && sexo != "F") throw java.lang.Exception() //Erro-Excepção Personalizada
             this.sexo = sexo
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+        } catch (erro: java.lang.Exception) {
+            erro.printStackTrace()
+        } catch (erro: Exception) {
+            erro.printStackTrace()
         }
     }
 
+    /**
+     * Método que encapsula a data de nascimento deste objecto pessoa
+     * (em caso de erro, atribui a data actual)
+     * @param nascimento    String
+     * @throws Exception
+     */
     fun setNasc(nascimento: String) {
         try {
             this.nascimento = LocalDate.parse(nascimento); setIdade()
-        } catch (e: Exception) {
-            e.printStackTrace();this.nascimento = LocalDate.now(ZoneId.systemDefault())
-        }//Se estiver errado atribui a data actual na mesma
+        } catch (erro: Exception) {
+            erro.printStackTrace();this.nascimento = LocalDate.now(ZoneId.systemDefault())
+        }//Se estiver errada, atribui a data actual... na mesma
         finally {
         }
     }
 
+    /**
+     * Método que calcula a idade de vida do objecto Pessoa
+     * (depois de receber a data de nascimento)
+     */
     private fun setIdade() {
         this.idade = Period.between(this.nascimento, LocalDate.now(ZoneId.systemDefault()))
     }
 
-    fun setStrFoto(fotoStr: String) {
-        this.strFoto = fotoStr
-    }
-    @Deprecated("(Não Implementado)")
-    fun setFoto() {
-        val iFoto = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        iFoto.addCategory(Intent.CATEGORY_OPENABLE)
-        iFoto.setType("image/webp")
+    /**
+     * Método para encapsular a ImageView
+     * @param Urifoto   String
+     * @throws  Exception
+     */
+    fun setUri(urifoto: String) {
+        try {
+            this.uriFoto = Uri.parse(urifoto)
+        } catch (erro: NullPointerException) {
+            erro.printStackTrace()
+        } catch (erro: Exception) {
+            this.uriFoto = Uri.parse(uriEstatica);erro.printStackTrace()
+        } finally {
+            this.foto.setImageURI(this.uriFoto)
+        }
     }
 
     /**
@@ -113,13 +165,31 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         return this.idade.years
     }
 
+    @Deprecated("Não implementado")
     fun getIdade(): Period {
         return this.idade
     }
 
-    fun getFotoStr(): String {
-        return this.strFoto
+    @Deprecated("Não implementado")
+    fun getUriFoto(): String {
+        return this.uriFoto.toString()
     }
+
+    @Deprecated("Não implementado")
+    fun getFoto(): ImageView {
+        return this.foto
+    }
+
+    /**
+     * Método para gravar a foto na Base de dados
+     * @param   cont    Context
+     * @return ByteArray
+     *
+     */
+    @Deprecated("Não implementado")
+    fun uriToByteS(cont: Context):
+            ByteArray? =
+        cont.contentResolver.openInputStream(this.uriFoto)?.use { it.buffered().readBytes() }
 
     /**
      * função que concatena os dados do objecto: Contacto numa String
@@ -162,10 +232,13 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
 
     /**
      * Implentação da Interface de validação de Documentos -CheckDigit do Cartão de Cidadão
+     * Função importada
      * @author  Autenticacao.gov
      * @see     <link>https://www.autenticacao.gov.pt/documents/20126/0/Valida%C3%A7%C3%A3o+de+N%C3%BAmero+de+Documento+do+Cart%C3%A3o+de+Cidad%C3%A3o+%281%29.pdf/7d5745ba-2bcc-e861-3954-bafe9f7591a0?version=1.0&t=1658411665319&previewFileIndex=4</link>
-     * @see DocumentoValido
+     * @see     DocumentoValido
      * @param   numeroDocumento     String
+     * @return  Boolean
+     * @throws  DocumentoException
      */
     override fun validarCC(numeroDocumento: String): Boolean {
         var soma = 0
@@ -187,8 +260,10 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      *
      * @author  Autenticacao.gov
      * @see     <link>https://www.autenticacao.gov.pt/documents/20126/0/Valida%C3%A7%C3%A3o+de+N%C3%BAmero+de+Documento+do+Cart%C3%A3o+de+Cidad%C3%A3o+%281%29.pdf/7d5745ba-2bcc-e861-3954-bafe9f7591a0?version=1.0&t=1658411665319&previewFileIndex=4</link>
+     *
      * @param   letra   Char
      * @return  Int
+     * @throws  DocumentoException
      */
     override fun buscarNumeroDoCaractere(letra: Char): Int {
         when (letra) {

@@ -15,8 +15,11 @@ import com.ruipereira.tfinal_ruipereira.databinding.ListaBinding
 /**
  * Classe que lista os Contactos e que os ordena por ordem Descendente e Ascendente.
  * Activity Principal - Gestão da Lista
+ *
  * @author   Rui Pereira
  */
+const val uriEstatica = "android.resource://com.ruipereira.tfinal_ruipereira/R.drawable/semfoto"
+
 class Lista : AppCompatActivity() {
     private val binding by lazy { ListaBinding.inflate(layoutInflater) }
     private lateinit var contS: ArrayList<Contacto>
@@ -41,10 +44,9 @@ class Lista : AppCompatActivity() {
             "contactos.db",
             null
         )//Inicializa o Controlador da Base de dados
-        //contS = ArrayList()                                         // Inicializa o ArrayList
-        contS =
-            ligarBD.carregar()                                        // Carrega da Base de dados
-        // contS =ligar.load2List()                                      // Carrega dados estáticos
+        contS = ArrayList()                            // Inicializa o ArrayList
+        contS = ligarBD.carregar()                     // Carrega da Base de dados
+        //contS =ligarBD.load2List()                   // Carrega dados estáticos
         adaptar()
         binding.lstContactos.setOnItemClickListener { parent, view, position, id ->
             max.start()
@@ -66,7 +68,7 @@ class Lista : AppCompatActivity() {
         }
         /**
          * Para ordenar, cria um novo array odenado, com base no #contS
-         * e copia novamente para #contS
+         * e copia novamente para {@link #contS}
          */
         binding.btnDescende.setOnClickListener {
             val desc = contS.sortedWith(compareBy { it.getNome() }).reversed()
@@ -80,7 +82,6 @@ class Lista : AppCompatActivity() {
             contS.addAll(asc)
             adaptar()
         }
-
         /**
          * Retorno do Detalhe e validar a operação pedida no #Detalhe
          * recebe o codigo de resultado (juntamente com a operação que vem do extra, agora é redundante)
@@ -133,8 +134,18 @@ class Lista : AppCompatActivity() {
             pack.putStringArrayList("Contacto", contS[pos].toArrayList())
         else
             pack.putStringArrayList(
-                "Contacto",
-                Contacto("0", "n", "m", "1900-01-01", "M", "00", "00", "a@b.pt").toArrayList()
+                "Contacto",             //Contacto "Dummy"
+                Contacto(
+                    "0",
+                    "n",
+                    "m",
+                    "1900-01-01",
+                    "M",
+                    "$uriEstatica",
+                    "00",
+                    "00",
+                    "a@b.pt"
+                ).toArrayList()
             )
         iDet.putExtras(pack)
         res.launch(iDet)

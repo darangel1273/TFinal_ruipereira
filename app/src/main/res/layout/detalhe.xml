@@ -124,6 +124,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_weight="20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -149,6 +150,7 @@
             android:text="@string/idade"
             android:textAlignment="textEnd"
             android:textSize="20sp"
+            android:layout_weight="10"
             android:textStyle="bold" />
     </LinearLayout>
     <RadioGroup

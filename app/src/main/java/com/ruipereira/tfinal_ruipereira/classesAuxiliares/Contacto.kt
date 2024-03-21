@@ -8,21 +8,24 @@ import android.content.ContentValues
  * @author  Rui Pereira
  */
 class Contacto : Pessoa {
-    private var Telefone: String = ""
-    private var Telemovel: String = ""
-    private var Email: String = ""
+    private var telefone: String = ""
+    private var telemovel: String = ""
+    private var email: String = ""
 
     /**
      * Construtor 1 - Array de String
      * @param   ArrayList
      */
-    constructor(a: ArrayList<String>) : super(a[0], a[1], a[2], a[3], a[4]) {
-        setTelefone(a[5]); setTelemovel(a[6]); setEmail(a[7])
+    constructor(a: ArrayList<String>) : super(a[0], a[1], a[2], a[3], a[4], a[5]) {
+        setTelefone(a[6]); setTelemovel(a[7]); setEmail(a[8])
     }
 
     /**
      * Construtor 2 - Só de Strings
+     *
+     * @version 1
      */
+    @Deprecated("Obsoleto com a introdução da uri e da imageView")//, ReplaceWith("construtor()"))
     constructor(
         bi: String,
         nome: String,
@@ -31,47 +34,67 @@ class Contacto : Pessoa {
         sexo: String,
         telefone: String,
         telemovel: String,
-        email: String
+        email: String,
     ) : super(bi, nome, morada, nascimento, sexo) {
         setTelefone(telefone); setTelemovel(telemovel); setEmail(email)
+    }
+
+    /**
+     * Construtor 2 - Só de Strings, com uri da imageView
+     *
+     * @version 2
+     */
+    constructor(
+        cc: String,
+        nome: String,
+        morada: String,
+        nascimento: String,
+        sexo: String,
+        uri: String,
+        telefone: String,
+        telemovel: String,
+        email: String,
+    ) : super(cc, nome, morada, nascimento, sexo, uri) {
+        setTelefone(telefone); setTelemovel(telemovel); setEmail(email);setUri(uri)
     }
 
     /**
      * Setters
      */
     fun setTelefone(telefone: String) {
-        this.Telefone = telefone
+        this.telefone = telefone
     }
 
     fun setTelemovel(telemovel: String) {
-        this.Telemovel = telemovel
+        this.telemovel = telemovel
     }
 
     fun setEmail(email: String) {
-        this.Email = email
+        this.email = email
     }
 
     /**
      * Getters
      */
     fun getTelefone(): String {
-        return this.Telefone
+        return this.telefone
     }
 
     fun getTelemovel(): String {
-        return this.Telemovel
+        return this.telemovel
     }
 
     fun getEmail(): String {
-        return this.Email
+        return this.email
     }
 
     /**
-     * Parsers
+     * Parsers - toString() Adaptado para aparecer na ListView pelo adapter
+     * @see Lista.kt
      */
     override fun toString(): String {
-        return getNome()
-    }//super.toString()+":"+getTelefone()+":"+getTelemovel()+":"+getEmail() }
+        return super.toString() + ":" + getTelefone() + ":" + getTelemovel() + ":" + getEmail()
+    }
 
     /**
      * Método que converte o corrente objecto #Contacto num Array de Strings

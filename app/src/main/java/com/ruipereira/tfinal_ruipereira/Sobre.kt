@@ -9,6 +9,7 @@ import com.ruipereira.tfinal_ruipereira.databinding.SobreBinding
  * Classe que mostra curiosidades da APP, ex:Autor, Avaliação
  * @author  Rui Pereira
  */
+const val dur: Long = 1000
 class Sobre : AppCompatActivity() {
     private val binding by lazy { SobreBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,22 +18,12 @@ class Sobre : AppCompatActivity() {
 
         binding.imgSetaBaixo.visibility = View.GONE
         binding.imgSetaCima.setOnClickListener {
-            binding.llVoltar.animate().translationX(binding.llVoltar.measuredHeight.toFloat() - 400)
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-            binding.llVoltar.animate().translationY(binding.llVoltar.measuredHeight.toFloat() - 200)
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-            binding.llVoltar.animate().translationZ(binding.llVoltar.measuredHeight.toFloat() - 100)
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+            anima(400, 200, 100)
             binding.imgSetaCima.visibility = View.GONE
             binding.imgSetaBaixo.visibility = View.VISIBLE
         }
         binding.imgSetaBaixo.setOnClickListener {
-            binding.llVoltar.animate().translationX(binding.llVoltar.measuredHeight.toFloat())
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-            binding.llVoltar.animate().translationY(binding.llVoltar.measuredHeight.toFloat())
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-            binding.llVoltar.animate().translationZ(binding.llVoltar.measuredHeight.toFloat())
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+            anima(0, 0, 0)
             binding.imgSetaBaixo.visibility = View.GONE
             binding.imgSetaCima.visibility = View.VISIBLE
         }
@@ -40,5 +31,20 @@ class Sobre : AppCompatActivity() {
             setResult(RESULT_OK)
             finish()
         }
+    }
+
+    fun anima(deltaX: Int, deltaY: Int, deltaZ: Int) {
+        binding.llVoltar.animate().translationX(binding.llVoltar.measuredHeight.toFloat() - deltaX)
+            .setDuration(dur)
+        binding.llVoltar.animate().translationY(binding.llVoltar.measuredHeight.toFloat() - deltaY)
+            .setDuration(dur)
+        binding.llVoltar.animate().translationZ(binding.llVoltar.measuredHeight.toFloat() - deltaZ)
+            .setDuration(dur)
+//        binding.llVoltar.animate().translationX(binding.llVoltar.measuredHeight.toFloat() - deltaX )
+//            .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+//        binding.llVoltar.animate().translationY(binding.llVoltar.measuredHeight.toFloat() - deltaY )
+//            .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+//        binding.llVoltar.animate().translationZ(binding.llVoltar.measuredHeight.toFloat() - deltaZ )
+//            .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
     }
 }

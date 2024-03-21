@@ -14,8 +14,9 @@ import java.time.ZoneId
  * @see <link>https://kotlinlang.org/docs/inheritance.html</link>
  * @author  Rui Pereira
  */
-const val uriEstatica = "android.resource://tfinal_ruipereira/drawable/semfoto"
-open class Pessoa : DocumentoValido {    //obriga a declarar a interface
+const val uriEstatica = "android.resource://com.ruipereira.tfinal_ruipereira/R.drawable/semfoto"
+
+open class Pessoa : DocumentoValido {    //obriga a declarar os métodos da interface
     private var cartCid: String = "00"
     private var nome: String = ""
     private var morada: String = ""
@@ -28,19 +29,24 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
     /**
      * Construtor de 5 Strings
      * @version 1
+     *
      * @param   cc      String.
      * @param   nome    String.
      * @param   morada  String.
      * @param   nascimento  String.
      * @param   sexo    String.
      */
+
+    @Deprecated("Obsoleto", ReplaceWith("construtor()"))
     constructor(cc: String, nome: String, morada: String, nascimento: String, sexo: String) {
         setCC(cc);setNome(nome);setMorada(morada);setNasc(nascimento);setSexo(sexo)
     }
 
+
     /**
      * Construtor de 6 Strings, com a Uri da ImageView
      * @version 2
+     *
      * @param   cc      String.
      * @param   nome    String.
      * @param   morada  String.
@@ -60,22 +66,23 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
     }
 
     /**
-     * Setters
      * Setter para o Cartão de Cidadão
      */
-    fun setCC(bi: String) {
+    fun setCC(cc: String) {
         try {
-            validarCC(bi)
+//            if( validarCC(cc) )
+            this.cartCid = cc
         }  //Chamada à função da interface
         catch (de: DocumentoException) {
             de.printStackTrace()
         } finally {
-            this.cartCid = bi
         } //Mesmo que seja inválido, aceita o CC na mesma. (Devido a erros na validação do CC)
     }
+
     fun setNome(nome: String) {
         this.nome = nome
     }
+
     fun setMorada(morada: String) {
         this.morada = morada
     }
@@ -132,9 +139,11 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         } catch (erro: NullPointerException) {
             erro.printStackTrace()
         } catch (erro: Exception) {
-            this.uriFoto = Uri.parse(uriEstatica);erro.printStackTrace()
+            this.uriFoto =
+                Uri.parse(uriEstatica);erro.printStackTrace()    //se der erro, carrega a Uri da imagem estática
         } finally {
-            this.foto.setImageURI(this.uriFoto)
+            this.foto.setImageURI(this.uriFoto)     // carrega a imagem: seja estática ou escolhida
+//            this.foto.setImageDrawable(Drawable.createFromPath(uriEstatica))
         }
     }
 
@@ -170,8 +179,8 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         return this.idade
     }
 
-    @Deprecated("Não implementado")
-    fun getUriFoto(): String {
+    //@Deprecated("Não implementado")
+    fun getUri(): String {
         return this.uriFoto.toString()
     }
 
@@ -187,32 +196,31 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      *
      */
     @Deprecated("Não implementado")
-    fun uriToByteS(cont: Context):
-            ByteArray? =
+    fun uriToByteArray(cont: Context): ByteArray? =
         cont.contentResolver.openInputStream(this.uriFoto)?.use { it.buffered().readBytes() }
 
     /**
-     * função que concatena os dados do objecto: Contacto numa String
+     * Parser - Método que concatena os dados do objecto: Contacto numa String
      * @return  String
      */
     override fun toString(): String {
-        return getCC() + ":" + getNome() + ":" + getMorada() + ":" + getNasc() + ":" + getAnos() + ":" + getSexo()
+        return getCC() + ":" + getNome() + ":" + getMorada() + ":" + getNasc() + ":" + getAnos() + ":" + getSexo() + ":" + getUri()
     }
 
     /**
-     * Função que simplifica o envio do objecto: Contacto no Bundle dos Extras
+     * Parser - Método que simplifica o envio do objecto: Contacto no Bundle dos Extras
      * @return   ret   ArrayList<Pessoa>
      */
     open fun toArrayList(): ArrayList<String> {
         val ret: ArrayList<String> = ArrayList()
         ret.add(getCC());ret.add(getNome()); ret.add(getMorada());ret.add(getNasc().toString());ret.add(
             getSexo()
-        )
+        );ret.add(getUri())
         return ret
     }
 
     /**
-     * Cria uma embalagem de Content Values da Pessoa, para simplificar operações na Base de Dados
+     * Parser - Método que cria uma embalagem de Content Values da Pessoa, para simplificar operações na Base de Dados
      * @return  ContentValues
      */
     open fun toCV(): ContentValues {
@@ -222,19 +230,22 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
         cv.put("morada", getMorada())
         cv.put("nascimento", getNasc().toString())
         cv.put("sexo", getSexo())
+        cv.put("uri", getUri())
         return cv
     }
 
     @Deprecated("Obsoleto", ReplaceWith("Construtor()"))
     fun fromArray(extras: Array<String>) {
-        setNome(extras[0]);setMorada(extras[1]);setNasc(extras[2]);setSexo(extras[3])
+        setCC(extras[0]);setNome(extras[1]);setMorada(extras[2]);setNasc(extras[3]);setSexo(extras[4]);setUri(
+            extras[5]
+        )
     }
 
     /**
      * Implentação da Interface de validação de Documentos -CheckDigit do Cartão de Cidadão
      * Função importada
      * @author  Autenticacao.gov
-     * @see     <link>https://www.autenticacao.gov.pt/documents/20126/0/Valida%C3%A7%C3%A3o+de+N%C3%BAmero+de+Documento+do+Cart%C3%A3o+de+Cidad%C3%A3o+%281%29.pdf/7d5745ba-2bcc-e861-3954-bafe9f7591a0?version=1.0&t=1658411665319&previewFileIndex=4</link>
+     * {@link}  https://www.autenticacao.gov.pt/documents/20126/0/Valida%C3%A7%C3%A3o+de+N%C3%BAmero+de+Documento+do+Cart%C3%A3o+de+Cidad%C3%A3o+%281%29.pdf/7d5745ba-2bcc-e861-3954-bafe9f7591a0?version=1.0&t=1658411665319&previewFileIndex=4</link>}
      * @see     DocumentoValido
      * @param   numeroDocumento     String
      * @return  Boolean
@@ -242,10 +253,11 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      */
     override fun validarCC(numeroDocumento: String): Boolean {
         var soma = 0
+        var bi = numeroDocumento.split(" ")[0]//Extrai os primeiros 9 números da 1ª String
         var segundodigito = false
-        if (numeroDocumento.length != 12) throw DocumentoException("Tamanho inválido para número de documento.")
-        for (i in numeroDocumento.length - 1 downTo 0) {
-            var valor: Int = buscarNumeroDoCaractere(numeroDocumento[i])
+        if (bi.length != 12) throw DocumentoException("Tamanho inválido para número de documento.")
+        for (i in bi.length - 1 downTo 0) {
+            var valor: Int = buscarNumeroDoCaractere(bi[i])
             if (segundodigito) {
                 valor *= 2
                 if (valor > 9) valor -= 9
@@ -320,6 +332,7 @@ open class Pessoa : DocumentoValido {    //obriga a declarar a interface
      * @param   nif  String
      * @return  Boolean
      */
+    @Deprecated("não implementado")
     override fun validarNIF(nif: String): Boolean {
         val max = 9
         //check if is numeric and has 9 numbers

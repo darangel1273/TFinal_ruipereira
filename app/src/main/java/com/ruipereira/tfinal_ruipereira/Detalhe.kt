@@ -16,8 +16,10 @@ import com.ruipereira.tfinal_ruipereira.databinding.DetalheBinding
 
 /**
  * Classe que vai fazer a gestão dos detalhes do Contacto
+ *
  * @author  Rui Pereira
  */
+//const val uriEstatica = "android.resource://com.ruipereira.tfinal_ruipereira/R.drawable/semfoto"
 class Detalhe : AppCompatActivity() {
     private lateinit var stringS: ArrayList<String>
     private lateinit var iLigar: Intent
@@ -38,7 +40,7 @@ class Detalhe : AppCompatActivity() {
             applicationContext,
             "contactos.db",
             null
-        )//Inicializa o Controlador da Base de dados
+        )//Inicializa o Controlador da Base de dados (preciso para ver se o CC é único antes de voltar à Lista)
         binding.btnRemover.visibility =
             View.VISIBLE                    // mostra sempre o botão para apagar, excepto quando for adicionar
         val beep = MediaPlayer.create(applicationContext, R.raw.click)
@@ -133,7 +135,8 @@ class Detalhe : AppCompatActivity() {
                 binding.txtNome.text.toString(),
                 binding.txtMorada.text.toString(), binding.txtNasc.text.toString(),
                 sx, binding.txtTelefone.text.toString(), binding.txtTelemovel.text.toString(),
-                binding.txtEmail.text.toString()
+                binding.txtEmail.text.toString(),
+                uriEstatica     // Provisório - Tem de tem de passar aqui a uri da imagem carregada do result da activity
             )
         )                // Carrega os dados do form no 2ºIndice
         if (binding.lblOperacao.text.toString() != "Adicionar") {
@@ -177,12 +180,12 @@ class Detalhe : AppCompatActivity() {
     private fun load2form() {
         stringS =
             pack.getStringArrayList("Contacto")!!      // Extrair os extras do Contacto no bundle
-        c.add(Contacto(stringS))                               // Carrega o 1ºIndice com os extras
+        c.add(Contacto(stringS))                        // Carrega o 1ºIndice com os extras
         binding.lblPosRegisto.text = pack.getInt("Posicao", -1).toString()
         binding.lblOperacao.text =
             pack.getString("Operacao", "") //Controlo a fazer no Detalhe que veio da Lista
         binding.txtCc.setText(c[0].getCC())                // Carrega o Objecto para o form
-        binding.txtNome.setText(c[0].getNome())                // Carrega o Objecto para o form
+        binding.txtNome.setText(c[0].getNome())            // Carrega o Objecto para o form
         binding.txtMorada.setText(c[0].getMorada())
         binding.txtNasc.setText(c[0].getNasc().toString())
         binding.txtIdade.text = calculaIdade()
